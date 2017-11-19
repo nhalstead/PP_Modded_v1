@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Vært: 127.0.0.1
--- Genereringstid: 14. 11 2017 kl. 14:30:55
--- Serverversion: 10.1.22-MariaDB
--- PHP-version: 7.1.4
+-- Genereringstid: 19. 11 2017 kl. 20:21:04
+-- Serverversion: 10.1.26-MariaDB
+-- PHP-version: 7.1.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -21,24 +21,6 @@ SET time_zone = "+00:00";
 --
 -- Database: `login_profile`
 --
-
--- --------------------------------------------------------
-
---
--- Struktur-dump for tabellen `members`
---
-
-CREATE TABLE `members` (
-  `mem_id` int(11) NOT NULL,
-  `fname` varchar(100) NOT NULL,
-  `lname` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `address` varchar(100) NOT NULL,
-  `zipcode` int(4) NOT NULL,
-  `city` varchar(100) NOT NULL,
-  `phone` int(8) NOT NULL,
-  `fk_users_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -98,10 +80,10 @@ CREATE TABLE `roles` (
 --
 
 INSERT INTO `roles` (`role_id`, `role_name`) VALUES
-(1, 'ADMIN'),
-(2, 'MODERATOR'),
-(3, 'MEMBER'),
-(4, 'GUEST');
+(1, 'admin'),
+(2, 'moderator'),
+(3, 'member'),
+(4, 'guest');
 
 -- --------------------------------------------------------
 
@@ -173,32 +155,32 @@ INSERT INTO `roles_and_permissions` (`fk_role_id`, `fk_permissions_id`) VALUES
 
 CREATE TABLE `users` (
   `uid` int(11) NOT NULL,
+  `uname` varchar(30) DEFAULT NULL,
+  `upass` varchar(50) DEFAULT NULL,
+  `uemail` varchar(70) DEFAULT NULL,
   `fname` varchar(100) DEFAULT NULL,
   `lname` varchar(60) NOT NULL,
-  `uname` varchar(30) DEFAULT NULL,
-  `uemail` varchar(70) DEFAULT NULL,
-  `upass` varchar(50) DEFAULT NULL,
-  `fk_role_id` int(11) NOT NULL
+  `phone` int(8) NOT NULL,
+  `address` varchar(100) NOT NULL,
+  `city` varchar(100) NOT NULL,
+  `zipcode` int(4) NOT NULL,
+  `fk_role_id` int(11) NOT NULL,
+  `fk_users_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Data dump for tabellen `users`
 --
 
-INSERT INTO `users` (`uid`, `fname`, `lname`, `uname`, `uemail`, `upass`, `fk_role_id`) VALUES
-(34, 'spar', 'spar', 'spar', 'spar@live.dk', 'f412a2010eb6625c85ebe505e051e18008501c5e', 1),
-(35, 'hej', 'hej', 'hej', 'hej@live.dk', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 3),
-(36, 'test', 'test', 'test', 'test@live.dk', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 3);
+INSERT INTO `users` (`uid`, `uname`, `upass`, `uemail`, `fname`, `lname`, `phone`, `address`, `city`, `zipcode`, `fk_role_id`, `fk_users_id`) VALUES
+(33, 'sam', 'f16bed56189e249fe4ca8ed10a1ecae60e8ceac0', 'sam@live.dk', 'sam', 'sam', 44, '', '', 0, 3, 0),
+(36, 'spar', 'f412a2010eb6625c85ebe505e051e18008501c5e', 'spar@live.dk', 'spar', 'spar', 0, '', '', 0, 1, 0),
+(37, 'hej', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'hej@live.dk', 'hej', 'hej', 0, '', '', 0, 3, 0),
+(38, NULL, NULL, 'hej@live.dk', 'hej', 'hej', 45, 'dfgdfg', 'fgfdg', 400, 0, 37);
 
 --
 -- Begrænsninger for dumpede tabeller
 --
-
---
--- Indeks for tabel `members`
---
-ALTER TABLE `members`
-  ADD PRIMARY KEY (`mem_id`);
 
 --
 -- Indeks for tabel `permissions`
@@ -223,11 +205,6 @@ ALTER TABLE `users`
 --
 
 --
--- Tilføj AUTO_INCREMENT i tabel `members`
---
-ALTER TABLE `members`
-  MODIFY `mem_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
---
 -- Tilføj AUTO_INCREMENT i tabel `permissions`
 --
 ALTER TABLE `permissions`
@@ -241,7 +218,7 @@ ALTER TABLE `roles`
 -- Tilføj AUTO_INCREMENT i tabel `users`
 --
 ALTER TABLE `users`
-  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;COMMIT;
+  MODIFY `uid` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=39;COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
