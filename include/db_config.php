@@ -24,7 +24,7 @@ class DB_con {
 	}
 }
 
-$mysqli = new mysqli('localhost', 'root', '', 'login_profile');
+$mysqli = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD,DB_DATABASE);
 
 if ($mysqli->connect_errno) {
     echo "Error: " . $mysqli->connect_error . "\n";

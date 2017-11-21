@@ -52,18 +52,18 @@ class User {
 		}
 	}
 	public function get_status($uid){
-			$query = "SELECT role_name FROM roles 
-			INNER JOIN users ON fk_role_id = role_id
-			WHERE uid = $uid";
-			
-			$result = $this->db->query($query) or die($this->db->error);        
-			$user_data = $result->fetch_array(MYSQLI_ASSOC);
-			if ($user_data) {
-				$role = $user_data['role_name'];
-			} else {
-				$role = 'TRIAL';
-			}
-			return $role;
+		$query = "SELECT role_name FROM roles 
+		INNER JOIN users ON fk_role_id = role_id
+		WHERE uid = $uid";
+		
+		$result = $this->db->query($query) or die($this->db->error);        
+		$user_data = $result->fetch_array(MYSQLI_ASSOC);
+		if ($user_data) {
+			$role = $user_data['role_name'];
+		} else {
+			$role = 'TRIAL';
+		}
+		return $role;
 	}
 
     function fetch_role($uid) {
@@ -84,33 +84,28 @@ class User {
 		return "GUEST";
     }
 	
-	public function get_profile($uid){
-            $query = "SELECT members.mem_id, users.uid
-            FROM members
-            INNER JOIN users ON members.fk_users_id = users.uid
-            WHERE uid = $uid";
-            
+	   public function get_profile($uid){
+            $query = "SELECT * FROM users WHERE uid = $uid";
             $result = $this->db->query($query) or die($this->db->error);        
             $user_data = $result->fetch_array(MYSQLI_ASSOC);
         
     }
 	
 	public function get_user_by_id($id){
-        $query = "SELECT * FROM users WHERE uid = " . (int) $id . " LIMIT 1";
+        $query = "SELECT * FROM users WHERE fk_users_id = " . (int) $id . " LIMIT 1";
         $result = $this->db->query($query) or die($this->db->error);
         return $result->fetch_assoc();
     }
     
     /*** starting the session ***/
     public function get_session(){
-        return $_SESSION['login'];
-        }
+		return $_SESSION['login'];
+	}
     public function user_logout() {
-        $_SESSION['login'] = FALSE;
-        unset($_SESSION);
-        session_destroy();
-        }
-    
+		$_SESSION['login'] = FALSE;
+		unset($_SESSION);
+		session_destroy();
+	}
 }
 
 function clean($in = ""){
@@ -118,11 +113,4 @@ function clean($in = ""){
 	return mysqli_real_escape_string($mysqli, $in);
 }
 function c($in = ""){ return clean($in); }
-
-if(isset($_POST['Submit'])) {		
-	require_once ('Member.php');
-	$user = new User;
-	$member = new Member($mysqli, $user);
-	$member->upsert(c($_POST["fname"]), c($_POST["lname"]), c($_POST["email"]), c($_POST["address"]), c($_POST["zipcode"]), c($_POST["city"]), c($_POST["phone"]), $_SESSION['uid']);
-	exit();
-}
+?>
