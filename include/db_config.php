@@ -5,7 +5,7 @@ ini_set('display_startup_errors', TRUE);
 
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
-define('DB_PASSWORD', '');
+define('DB_PASSWORD', 'usbw');
 define('DB_DATABASE', 'login_profile');
 
 define('PROJECT_NAME', 'Film Databasen');

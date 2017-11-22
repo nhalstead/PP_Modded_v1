@@ -1,18 +1,15 @@
 <?php 
 session_start();
-    include_once '../include/class.user.php';
-    $user = new User();
-
-    $uid = $_SESSION['uid'];
-
+require_once('../include/class.user.php');
+$user = new User();
     if (!$user->get_session()){
-       header("Location: login.php");
+       header("Location: ../login/login.php");
     }
-
-    if (isset($_GET['q'])){
+    else if (isset($_GET['q'])){
         $user->user_logout();
-        header("Location: login.php");
+        header("Location: ../login/login.php");
     }
+$uid = $_SESSION['uid'];
 $userData = $user->get_user_by_id($uid);
 ?>
 <!DOCTYPE html>

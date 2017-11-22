@@ -1,24 +1,21 @@
-<?php require_once("../include/class.user.php"); ?>
-smartipants
-
 <?php
-function fetch_role(){
-    $role = "GUEST";
-    if(isset($_SESSION['id_user'])){
-        // User exists
-        $sql = sprintf("SELECT * FROM users WHERE id_user='%s' LIMIT 1",
-		mysql_real_escape_string($_SESSION['id_user']));
-
-        // RUN THE MYSQL QUERY TO FETCH THE USER, SAVE INTO $row
-
-        if(!empty($row)){
-            $role = $user_row['role'];
-        }
-    }
-    return $role;
+require_once("../include/class.user.php");
+$user = new User();
+if (!$user->get_session()){
+	//header("Location: ../login/login.php");
 }
+else if (isset($_GET['q'])){
+	//$user->user_logout();
+	//header("Location: ../login/login.php");
+}
+$uid = $_SESSION['uid'];
+$userData = $user->get_user_by_id($uid);
 
-switch(strtoupper(fetch_role())){
+switch($user->fetch_role($uid)){
+	case "PUBLIC":
+		echo "Welcome Pubic User. You should not be seeing this btw!";
+	break;
+	
 	case "GUEST": 
 		echo "Welcome Guest!";
 	break;

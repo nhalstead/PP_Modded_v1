@@ -3,14 +3,27 @@ require_once("db_config.php");
 class User {
 	protected $db;
 	public function __construct(){
+		if (session_status() == PHP_SESSION_NONE) {
+			session_start();
+		}
 		$this->db = new DB_con();
 		$this->db = $this->db->ret_obj();
+	}
+	
+	protected function cleanMyStuff(&$in = ""){
+		$in = mysqli_real_escape_string($this->db, $in);
 	}
 	
 	/*
 	 * For Registration
 	 */
 	public function reg_user($fname,$lname,$username,$email,$password){
+		$this->cleanMyStuff($fname);
+		$this->cleanMyStuff($lname);
+		$this->cleanMyStuff($username);
+		$this->cleanMyStuff($email);
+		$this->cleanMyStuff($password);
+		
 		$password = sha1($password);
 		//Check if the Username or Email is already in use by another User.
 		$query = "SELECT * FROM users WHERE uname='$username' OR uemail='$email'";
@@ -31,10 +44,11 @@ class User {
 	 * For Login Processes
 	 */
 	public function check_login($emailusername, $password){
+		$this->cleanMyStuff($emailusername);
+		$this->cleanMyStuff($password);
 		$password = sha1($password);
 		
-		$query = "SELECT uid, fk_role_id from users WHERE uemail='$emailusername' or uname='$emailusername' and upass='$password'";
-		
+		$query = "SELECT uid FROM users WHERE uemail='$emailusername' OR uname='$emailusername' AND upass='$password'";
 		$result = $this->db->query($query) or die($this->db->error);
 		$user_data = $result->fetch_array(MYSQLI_ASSOC);
 		$count_row = $result->num_rows;
@@ -52,54 +66,84 @@ class User {
 		}
 	}
 	public function get_status($uid){
-		$query = "SELECT role_name FROM roles 
-		INNER JOIN users ON fk_role_id = role_id
-		WHERE uid = $uid";
+		$this->cleanMyStuff($uid);
+		$query = "SELECT * FROM  `roles` INNER JOIN  `roles_and_permissions` ON 
+				`roles_and_permissions`.`permission_id` =  `roles`.`role_id` WHERE 
+				`uid` = ".$uid." ORDER BY  `roles_and_permissions`.`weight` DESC  LIMIT 0 , 30";
 		
 		$result = $this->db->query($query) or die($this->db->error);        
 		$user_data = $result->fetch_array(MYSQLI_ASSOC);
 		if ($user_data) {
 			$role = $user_data['role_name'];
 		} else {
-			$role = 'TRIAL';
+			$role = 'GUEST';
 		}
 		return $role;
 	}
 
     function fetch_role($uid) {
-        if(isset($_SESSION['role_id'])) {
-			// User Session Exists
-				$query = "SELECT role_name FROM roles INNER JOIN users ON fk_role_id = role_id WHERE uid = $uid";
-				$result = $this->db->query($query) or die($this->db->error);
-				$user_data = $result->fetch_array(MYSQLI_ASSOC);
-				//echo $user_data['role_name'];
-			// RUN THE MYSQL QUERY TO FETCH THE USER, SAVE INTO $row
-			if(!empty($user_data)){
-				return strtoupper($user_data['role_name']);
-			} else {
-				return "GUEST";
-			}
-        }
-		// If no User Session Exists
-		return "GUEST";
+		$this->cleanMyStuff($udi);
+		// User Session Exists
+			$query = "SELECT * FROM  `roles` INNER JOIN  `roles_and_permissions` ON 
+				`roles_and_permissions`.`permission_id` =  `roles`.`role_id` WHERE 
+				`uid` = ".$uid." ORDER BY  `roles_and_permissions`.`weight` DESC  LIMIT 0 , 30";
+			$result = $this->db->query($query) or die($this->db->error);
+			$user_data = $result->fetch_array(MYSQLI_ASSOC);
+			//echo $user_data['role_name'];
+		// RUN THE MYSQL QUERY TO FETCH THE USER, SAVE INTO $row
+		if(!empty($user_data)){
+			return strtoupper($user_data['role_name']);
+		} else {
+			return "PUBLIC";
+		}
     }
 	
-	   public function get_profile($uid){
-            $query = "SELECT * FROM users WHERE uid = $uid";
-            $result = $this->db->query($query) or die($this->db->error);        
-            $user_data = $result->fetch_array(MYSQLI_ASSOC);
-        
+	/**
+	 * Get All of the Roles the User has Assigned to them.
+	 */
+    function fetch_roles($uid) {
+		$user_data = array();
+		$query = "SELECT * FROM  `roles` INNER JOIN  `roles_and_permissions` ON 
+			`roles_and_permissions`.`permission_id` =  `roles`.`role_id` WHERE 
+			`uid` = ".$uid." ORDER BY  `roles_and_permissions`.`weight` DESC  LIMIT 0 , 30";
+		// User Session Exists
+			$result = $this->db->query($query) or die($this->db->error);
+			while($tmp = $result->fetch_array(MYSQLI_ASSOC)){
+				$user_data[] = $tmp['role_name'];
+			}
+		// RUN THE MYSQL QUERY TO FETCH THE USER, SAVE INTO $row
+		if(!empty($user_data)){
+			return $user_data;
+		} else {
+			return array("GUEST");
+		}
     }
+	
+	public function has_role($uid, $role = "GUEST"){
+		$roles = $this->fetch_roles($uid);
+		return in_array($role, $roles);
+	}
+	
+	public function get_profile($uid){
+		$query = "SELECT * FROM users WHERE uid = $uid";
+		$result = $this->db->query($query) or die($this->db->error);        
+		$user_data = $result->fetch_array(MYSQLI_ASSOC);
+	}
 	
 	public function get_user_by_id($id){
-        $query = "SELECT * FROM users WHERE fk_users_id = " . (int) $id . " LIMIT 1";
+        $query = "SELECT * FROM users WHERE uid = " . (int) $id . " LIMIT 1";
         $result = $this->db->query($query) or die($this->db->error);
         return $result->fetch_assoc();
     }
     
-    /*** starting the session ***/
+    /*** Starting the session ***/
     public function get_session(){
-		return $_SESSION['login'];
+		if(isset($_SESSION['login'])){
+			return $_SESSION['login'];
+		}
+		else {
+			return false;
+		}
 	}
     public function user_logout() {
 		$_SESSION['login'] = FALSE;

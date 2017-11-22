@@ -3,15 +3,25 @@ session_start();
 require_once('../include/class.user.php');
 $user = new User();
 
-function i(&$i, $n = "Data") { if(isset($i) && $i !== "") { return $i; } else { die("Missing ".$n."!"); } }
+if ($user->get_session() && !isset($_GET['q'])){
+	echo "User is Logged in.";
+	echo "Click <a href=\"?q\">Here</a> to Logout!";
+	exit();
+}
+if (isset($_GET['q'])){
+	header( "Refresh:5; url=../login/login.php", true, 303);
+	$user->user_logout();
+	echo "Bye!!";
+	exit();
+}
 
+
+function i(&$i, $n = "Data") { if(isset($i) && $i !== "") { return $i; } else { die("Missing ".$n."!"); } }
 if (isset($_POST['submit'])) { 
 		$P = $_POST;		
 	    $login = $user->check_login( i($P['emailusername']), i($P['password']) );
 	    if($login == true) {
-            $role_id = strtoupper($user->get_status($_SESSION['uid']));
-            //echo $role_id;
-			if($role_id == 'admin'){
+			if($user->has_role($_SESSION['uid'], "ADMIN")){
 				header("Location: ../admin/adminPage.php");
 			} else {
                 header("Location: home.php");

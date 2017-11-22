@@ -22,7 +22,7 @@ $userData = $user->get_user_by_id($uid);
 
 <br>
 	<center>
-        <a href="home.php?q=logout">LOGOUT</a>
+        <a href="../login/login.php?q=logout">LOGOUT</a>
 	</center>
 	<br>
 	<div class="row margin">

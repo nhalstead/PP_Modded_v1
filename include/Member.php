@@ -8,18 +8,19 @@ class Member {
         $this->db = $db;
         $this->user = $user;
     }
+
     public function upsert($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
         $user = $this->user->get_profile($uid);
         if (empty($user)) {
             return $this->update($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid);
         }
     }
-    protected function insert($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
-        $query  = "INSERT INTO `users` (`fname`, `lname`, `uemail`, `address`, `zipcode`, `city`, `phone`, `fk_users_id`) 
-        VALUES ('$fname', '$lname', '$email', '$address', '$zipcode', '$city', '$phone', '$uid')";
-        $result = $this->db->query($query) or die("(Member.php) SQL ERROR: ".$this->db->error);
-        return $this->db->insert_id;
-    }
+    // protected function insert($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
+        // $query  = "INSERT INTO `users` (`fname`, `lname`, `uemail`, `address`, `zipcode`, `city`, `phone`, `fk_users_id`) 
+        // VALUES ('$fname', '$lname', '$email', '$address', '$zipcode', '$city', '$phone', '$uid')";
+        // $result = $this->db->query($query) or die("(Member.php) SQL ERROR: ".$this->db->error);
+        // return $this->db->insert_id;
+    // }
     protected function update($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
 		$this->cleanMyStuff($fname);
 		$this->cleanMyStuff($lname);
@@ -31,14 +32,14 @@ class Member {
 		$this->cleanMyStuff($uid);
 		
         $query = "UPDATE users AS u
-            SET u.fname = '$fname',
+            SET u.uemail  = '$email',
+				u.fname = '$fname',
                 u.lname = '$lname',
-                u.uemail  = '$email',
                 u.address = '$address',
                 u.zipcode = '$zipcode',
                 u.city = '$city',
                 u.phone = '$phone'
-           WHERE u.fk_users_id = $uid";
+           WHERE u.uid = $uid";
         return $this->db->query($query);
     }
 	
