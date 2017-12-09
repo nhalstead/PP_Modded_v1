@@ -10,7 +10,7 @@ define('DB_DATABASE', 'login_profile');
 
 define('PROJECT_NAME', 'Film Databasen');
 define('PROJECT_EMAIL', 'Support@FilmBasen.dk');
-define('PROJECT_URL', 'www.Film-Databasen.dk');
+define('PROJECT_URL', '//www.film-databasen.dk');
 
 class DB_con {
 	public $connection;
@@ -24,8 +24,8 @@ class DB_con {
 	}
 }
 
-$mysqli = new mysqli(DB_SERVER, DB_USERNAME, DB_PASSWORD,DB_DATABASE);
-
+$mysqli = new DB_con();
+$mysqli = $mysqli->ret_obj();
 if ($mysqli->connect_errno) {
     echo "Error: " . $mysqli->connect_error . "\n";
     exit;

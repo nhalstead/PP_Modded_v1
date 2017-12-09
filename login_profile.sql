@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Nov 22, 2017 at 02:06 AM
+-- Generation Time: Dec 09, 2017 at 07:26 PM
 -- Server version: 5.6.13
 -- PHP Version: 5.4.17
 
@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `roles_and_permissions` (
   `uid` int(11) NOT NULL COMMENT 'Linking to the User''s account',
   `permission_id` int(11) NOT NULL COMMENT 'Linking to the Role and it''s permissions',
   PRIMARY KEY (`insertId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=46 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=47 ;
 
 --
 -- Dumping data for table `roles_and_permissions`
@@ -150,7 +150,8 @@ INSERT INTO `roles_and_permissions` (`insertId`, `weight`, `uid`, `permission_id
 (42, 0, 2, 8),
 (43, 0, 3, 18),
 (44, 0, 3, 19),
-(45, 0, 4, 24);
+(45, 0, 4, 24),
+(46, 0, 99, 4);
 
 -- --------------------------------------------------------
 
@@ -166,9 +167,9 @@ CREATE TABLE IF NOT EXISTS `users` (
   `fname` varchar(100) DEFAULT NULL,
   `lname` varchar(60) NOT NULL,
   `address` varchar(100) NOT NULL,
-  `zipcode` int(6) unsigned NOT NULL DEFAULT '123456',
+  `zipcode` varchar(6) NOT NULL DEFAULT '000000',
   `city` varchar(100) NOT NULL,
-  `phone` bigint(8) unsigned NOT NULL,
+  `phone` varchar(12) NOT NULL,
   PRIMARY KEY (`uid`)
 ) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=38 ;
 
@@ -177,10 +178,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`uid`, `uname`, `upass`, `uemail`, `fname`, `lname`, `address`, `zipcode`, `city`, `phone`) VALUES
-(34, 'spar', 'f412a2010eb6625c85ebe505e051e18008501c5e', 'mailme@gmail.com', 'spar', 'spar', '123 FakeIt Road', 156, 'WWW', 10545898),
-(35, 'hej', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'hej@live.dk', 'hej', 'hej', '', 123456, '', 0),
-(36, 'test', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'test@live.dk', 'test', 'test', '', 123456, '', 0),
-(37, 'noob', '34bcdf98deb05825ee8f40bad4b5912df89b0b95', 'noob@two.o', 'Noob', 'Noob', '', 123456, '', 0);
+(34, 'spar', 'f412a2010eb6625c85ebe505e051e18008501c5e', 'mailme@gmail.com', 'spar', 'spar', '123 FakeIt Road', '000000', 'WWW', '8885554455'),
+(35, 'hej', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'hej@live.dk', 'hej', 'hej', '', '123456', '', '0'),
+(36, 'test', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'test@live.dk', 'test', 'test', '', '123456', '', '0'),
+(37, 'noob', '34bcdf98deb05825ee8f40bad4b5912df89b0b95', 'noob@two.o', 'Noob', 'Noob', '', '123456', '', '0');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

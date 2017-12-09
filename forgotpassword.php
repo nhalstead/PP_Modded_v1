@@ -5,8 +5,8 @@ $password = substr( str_shuffle( $chars ), 0, 8 );
 
 // Generating New password as done in above function and Update it in database by below query
 $password = md5($password); //Hash Password
-$query = mysql_query("UPDATE registration SET password='$password' WHERE uemail='$email'");
-if($query){
+$query = mysql_query("UPDATE `users` SET `upass` ='$password' WHERE `uemail` ='$email'");
+if($query) {
 	$to = $email;
 	$subject = 'Your New Password...';
 	$message = 'Hello User

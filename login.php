@@ -1,6 +1,6 @@
 <?php 
 session_start();
-require_once('../include/class.user.php');
+require_once('include/class.user.php');
 $user = new User();
 
 if ($user->get_session() && !isset($_GET['q'])){
@@ -9,8 +9,8 @@ if ($user->get_session() && !isset($_GET['q'])){
 	exit();
 }
 if (isset($_GET['q'])){
-	header( "Refresh:5; url=../login/login.php", true, 303);
 	$user->user_logout();
+	header( "Refresh:5; url=login.php", true, 303);
 	echo "Bye!!";
 	exit();
 }
@@ -22,7 +22,7 @@ if (isset($_POST['submit'])) {
 	    $login = $user->check_login( i($P['emailusername']), i($P['password']) );
 	    if($login == true) {
 			if($user->has_role($_SESSION['uid'], "ADMIN")){
-				header("Location: ../admin/adminPage.php");
+				header("Location: adminPage.php");
 			} else {
                 header("Location: home.php");
             }
@@ -37,8 +37,8 @@ if (isset($_POST['submit'])) {
   <head>
     <meta charset="utf-8">
     <title>OOP Login Module</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-    <link rel="stylesheet" type="text/css" href="../assets/css/custom.css">
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/custom.css">
   </head>
 
   <body>
@@ -66,7 +66,7 @@ if (isset($_POST['submit'])) {
             <td>
             Remember me&nbsp;&nbsp;<input id="checkBox" type="checkbox"></input><br>
             <div class="ned">
-            <form action="../admin/adminPage.php">
+            <form action="adminPage.php">
               <input class="btn" type="submit" name="submit" value="Login" onclick="return(submitlogin());">
               </form>
               <a class="hoejre" href="forgotpassword.php">forgot password?</a>
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
           </tr>
           <tr>
             <td>&nbsp;</td>
-            <td><a href="../register/registration.php">Register new user</a></td>
+            <td><a href="register/registration.php">Register new user</a></td>
           </tr>
         </table>
       </form>

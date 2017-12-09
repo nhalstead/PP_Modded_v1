@@ -1,12 +1,12 @@
 <?php
-require_once("../include/class.user.php");
+require_once("include/class.user.php");
 $user = new User();
 if (!$user->get_session()){
-	//header("Location: ../login/login.php");
+	//header("Location: login.php");
 }
 else if (isset($_GET['q'])){
 	//$user->user_logout();
-	//header("Location: ../login/login.php");
+	//header("Location: login.php");
 }
 $uid = $_SESSION['uid'];
 $userData = $user->get_user_by_id($uid);
@@ -39,4 +39,6 @@ switch($user->fetch_role($uid)){
 		exit();
 	break;
 }
+echo "<br>";
+echo "<a href='home.php'>Click me to goto your Profile!</a>";
 ?>

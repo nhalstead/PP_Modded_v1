@@ -1,10 +1,10 @@
 <?php 
-require_once('../include/class.user.php');
+require_once('include/class.user.php');
 $user = new User();
 // Checking for user logged in or not
     /*if (!$user->get_session())
     {
-       header("location:index.php");
+       header("location: index.php");
     }*/
 if (isset($_POST['submit'])){
 	$fname = strip_tags(filter_input(INPUT_POST, 'fname', FILTER_SANITIZE_STRING));
@@ -16,7 +16,7 @@ if (isset($_POST['submit'])){
 	
 	if ($register) {
 		// Registration Success
-		echo "<div class='textcenter'>Registration successful <a href='../login/login.php'>Click here</a> to login</div>";
+		echo "<div class='textcenter'>Registration successful <a href='login.php'>Click here</a> to login</div>";
 	} else {
 		// Registration Failed
 		echo "<div class='textcenter'>Registration failed. Email or Username already exits please try again.</div>";
@@ -28,8 +28,8 @@ if (isset($_POST['submit'])){
   <head>
     <meta charset="utf-8">
     <title>Register</title>
-    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="../assets/css/custom.css" />
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="assets/css/custom.css" />
   </head>
 
   <body>
