@@ -76,7 +76,7 @@ class User {
 		if ($user_data) {
 			$role = $user_data['role_name'];
 		} else {
-			$role = 'PUBLIC';
+			$role = 'GUEST';
 		}
 		return $role;
 	}
@@ -94,7 +94,7 @@ class User {
 		if(!empty($user_data)){
 			return strtoupper($user_data['role_name']);
 		} else {
-			return "PUBLIC";
+			return "GUEST";
 		}
     }
 	
@@ -115,7 +115,7 @@ class User {
 		if(!empty($user_data)){
 			return $user_data;
 		} else {
-			return array("PUBLIC");
+			return array("GUEST");
 		}
     }
 	

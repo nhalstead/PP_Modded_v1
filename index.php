@@ -13,11 +13,13 @@ $userData = $user->get_user_by_id($uid);
 
 switch($user->fetch_role($uid)){
 	case "PUBLIC":
-		echo "Welcome Pubic User. You should not be seeing this btw!";
+		echo "Welcome Pubic User. Please Login!";
+		echo "<a href='login.php'>Click me!</a>";
+		exit();
 	break;
 	
 	case "GUEST": 
-		echo "Welcome Guest!";
+		echo "Welcome Guest User!";
 	break;
 	
 	case "MEMBER":
