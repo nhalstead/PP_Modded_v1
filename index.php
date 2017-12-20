@@ -2,11 +2,11 @@
 require_once("include/class.user.php");
 $user = new User();
 if (!$user->get_session()){
-	//header("Location: login.php");
+	header("Location: login.php");
 }
 else if (isset($_GET['q'])){
-	//$user->user_logout();
-	//header("Location: login.php");
+	$user->user_logout();
+	header("Location: login.php");
 }
 $uid = $_SESSION['uid'];
 $userData = $user->get_user_by_id($uid);

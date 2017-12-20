@@ -26,8 +26,8 @@ session_start();
 				<a class="navbar-left" href="home.php">Home</a>
 				<?php
 					// Offer the Admin Page if Admin
-					if($user->has_role($uid, "ADMIN")){
-						echo '<a class="navbar-left" href="adminPage.php">Admin Page</a>';
+					if($user->has_role($uid, "MODERATOR") || $user->has_role($uid, "Admin")){
+						echo '<a class="navbar-left" href="adminPage.php">Mgr Page</a>';
 					}
 				?>
 				<a class="navbar-right" href="home.php?q=logout">LOGOUT</a>
@@ -37,7 +37,20 @@ session_start();
 		<div class="row margin">
 			<div class="col-md-4">
 				<img src="assets/images/vegeta.jpg" alt="welcome"/><br>
-				<br><b><?php echo $user->has_role($uid, "ADMIN")?"Welcome Admin":"Welcome User" ?></b>
+				<br><b>
+					<?php  
+						if($user->has_role($uid, "ADMIN")){
+							echo "Welcome Admin!";
+						}
+						else if($user->has_role($uid, "MODERATOR")) {
+							echo "Welcome Mod!";
+						}
+						else {
+							echo "Welcome User!";
+						}
+					?>
+				</b>
+				
 				<br>Full name: <?php echo ucwords($userData['fname']); ?>
 				<br>Last name: <?php echo ucwords($userData['lname']); ?>
 				<br>Email: <?php echo $userData['uemail']; ?>

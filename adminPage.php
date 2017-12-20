@@ -5,45 +5,32 @@ $user = new User();
 $uid = $_SESSION['uid'];
 
 if (!$user->get_session()){
-    header("location: login.php");
+    header("Location: home.php");
 	exit(); # Stop Loading
 }
 
 if (isset($_GET['q'])){
     $user->user_logout();
-    header("location: login.php");
+    header("Location: login.php");
 	exit(); # Stop Loading
 }
 $userData = $user->get_user_by_id($uid);
 
+$role_level = 0;
 $role = $user->fetch_role($uid);
 switch(strtoupper($role)){
-	case "GUEST": 
-		echo "Welcome Guest!";
-	break;
-	
-	case "MEMBER":
-		echo "Hello Memeber!";
-	break;
-	
 	case "MODERATOR":
-		echo "Hello Mod!";
+		$role_level = 1;
 	break;
 	
 	case "ADMIN":
-		echo "Hello Admin!";
+		$role_level = 2;
 	break;
-	
-	case "PUBLIC":
-		http_response_code(500);
-		echo "Please contact support, You Account has no perms!";
-		echo "<br><a href='home.php'>Click to go Home!</a>";
-		exit();
-	break;
+
 	default:
-		http_response_code(500);
-		echo "Programming Error! User has no case!";
-		exit();
+		http_response_code(403);
+		header("Location: home.php");
+	exit(); # Stop Loading
 	break;
 }
 ?>
@@ -58,8 +45,8 @@ switch(strtoupper($role)){
 			<a class="navbar-left" href="home.php">Home</a>
 			<?php
 				// Offer the Admin Page if Admin
-				if($user->has_role($uid, "ADMIN")){
-					echo '<a class="navbar-left" href="adminPage.php">Admin Page</a>';
+				if($user->has_role($uid, "MODERATOR") || $user->has_role($uid, "Admin")){
+					echo '<a class="navbar-left" href="adminPage.php">Mgr Page</a>';
 				}
 			?>
 			<a class="navbar-right" href="home.php?q=logout">LOGOUT</a>
@@ -69,7 +56,20 @@ switch(strtoupper($role)){
 	<div class="row margin">
 		<div class="col-md-4">
 			<img src="assets/images/vegeta.jpg" alt="welcome"/><br>
-			<br><b><?php echo $user->has_role($uid, "ADMIN")?"Welcome Admin":"Welcome User" ?></b>
+			<br><b>
+				<?php  
+					if($user->has_role($uid, "ADMIN")){
+						echo "Welcome Admin!";
+					}
+					else if($user->has_role($uid, "MODERATOR")) {
+						echo "Welcome Mod!";
+					}
+					else {
+						echo "Welcome User!";
+					}
+				?>
+			</b>
+			
 			<br>Full name: <?php echo ucwords($userData['fname']); ?>
 			<br>Last name: <?php echo ucwords($userData['lname']); ?>
 			<br>Email: <?php echo $userData['uemail']; ?>
@@ -82,9 +82,9 @@ switch(strtoupper($role)){
 		  </h1>
 	   </div>
 		<div class="col-md-4">
-			<a href="profiles.php">Edit Profile</a><br>
-			<a href="password.php">Change Password</a><br>
-			<a href="imagePage.php">Upload Picture</a>
+			<a href="adminPage_users.php">View Users</a><br>
+			<a href="adminPage_users.php?edit">Edit Users</a><br>
+			<a href="adminPage_users.php?reg">New Users</a><br>
 		</div>
 	</div>
 	<div style="padding-left:50px;">

@@ -119,6 +119,37 @@ class User {
 		}
     }
 	
+	/**
+	 * Get All of the Users in the Database.
+	 */
+    function fetch_all_users() {
+		$user_data = array();
+		$query = "SELECT * FROM  `users`WHERE `uid` != 0 ORDER BY `uid` DESC  LIMIT 0 , 30";
+		// User Session Exists
+			$result = $this->db->query($query) or die($this->db->error);
+			while($tmp = $result->fetch_array(MYSQLI_ASSOC)){
+				unset($tmp['upass']); // Make it safe
+				$user_data[] = $tmp;
+			}
+		return $user_data;
+    }
+	
+	/**
+	 * Get All of the Users in the Database THAT HAVE ROLES.
+	 */
+    function fetch_all_users_wr() {
+		$user_data = array();
+		$query = "SELECT * FROM  `users` INNER JOIN  `roles_and_permissions` ON 
+			`roles_and_permissions`.`uid` =  `users`.`uid` WHERE 
+			`users`.`uid` != 0 ORDER BY  `roles_and_permissions`.`weight` DESC  LIMIT 0 , 30";
+		// User Session Exists
+			$result = $this->db->query($query) or die($this->db->error);
+			while($tmp = $result->fetch_array(MYSQLI_ASSOC)){
+				$user_data[] = $tmprole_name;
+			}
+		return $user_data;
+    }
+	
 	public function has_role($uid, $role = "GUEST"){
 		$roles = $this->fetch_roles($uid);
 		return in_array($role, $roles);
