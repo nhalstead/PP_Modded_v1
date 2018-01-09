@@ -1,14 +1,13 @@
-<?php 
+<?php
 session_start();
     include_once 'include/class.user.php';
-    $user = new User();
+    $user = User::getInstance();
     $uid = $_SESSION['uid'];
     if (!$user->get_session()){
        header("Location: login.php");
     }
     if (isset($_GET['q'])){
-        $user->user_logout();
-        header("Location: login.php");
+        header("Location: login.php?q");
     }
 	$userData = $user->get_user_by_id($uid);
 ?>
@@ -17,8 +16,8 @@ session_start();
 	<head>
 		<meta charset="utf-8">
 		<title>Home</title>
-		<link rel="stylesheet" href="assets/css/bootstrap.css"/>  
-		<link rel="stylesheet" href="assets/css/custom.css"/> 
+		<link rel="stylesheet" href="assets/css/bootstrap.css"/>
+		<link rel="stylesheet" href="assets/css/custom.css"/>
 	</head>
 	<body>
 		<nav class="navbar navbar-default navbar-fixed-top">
@@ -26,7 +25,7 @@ session_start();
 				<a class="navbar-left" href="home.php">Home</a>
 				<?php
 					// Offer the Admin Page if Admin
-					if($user->has_role($uid, "MODERATOR") || $user->has_role($uid, "Admin")){
+					if($user->has_role($uid, array("ADMIN", "MODERATOR") )){
 						echo '<a class="navbar-left" href="adminPage.php">Mgr Page</a>';
 					}
 				?>
@@ -38,7 +37,7 @@ session_start();
 			<div class="col-md-4">
 				<img src="assets/images/vegeta.jpg" alt="welcome"/><br>
 				<br><b>
-					<?php  
+					<?php
 						if($user->has_role($uid, "ADMIN")){
 							echo "Welcome Admin!";
 						}
@@ -50,9 +49,9 @@ session_start();
 						}
 					?>
 				</b>
-				
-				<br>Full name: <?php echo ucwords($userData['fname']); ?>
-				<br>Last name: <?php echo ucwords($userData['lname']); ?>
+
+				<br>First Name: <?php echo ucwords($userData['fname']); ?>
+				<br>Last Name: <?php echo ucwords($userData['lname']); ?>
 				<br>Email: <?php echo $userData['uemail']; ?>
 			</div>
 			<div class="col-md-4">

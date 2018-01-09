@@ -15,12 +15,7 @@ class Member {
             return $this->update($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid);
         }
     }
-    // protected function insert($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
-        // $query  = "INSERT INTO `users` (`fname`, `lname`, `uemail`, `address`, `zipcode`, `city`, `phone`, `fk_users_id`) 
-        // VALUES ('$fname', '$lname', '$email', '$address', '$zipcode', '$city', '$phone', '$uid')";
-        // $result = $this->db->query($query) or die("(Member.php) SQL ERROR: ".$this->db->error);
-        // return $this->db->insert_id;
-    // }
+
     protected function update($fname, $lname, $email, $address, $zipcode, $city, $phone, $uid){
 		$this->cleanMyStuff($fname);
 		$this->cleanMyStuff($lname);
@@ -30,19 +25,18 @@ class Member {
 		$this->cleanMyStuff($city);
 		$this->cleanMyStuff($phone);
 		$this->cleanMyStuff($uid);
-		
-        $query = "UPDATE users AS u
-            SET u.uemail  = '$email',
-				u.fname = '$fname',
-                u.lname = '$lname',
-                u.address = '$address',
-                u.zipcode = '$zipcode',
-                u.city = '$city',
-                u.phone = '$phone'
-           WHERE u.uid = $uid";
+
+        $query = "UPDATE users SET uemail  = '$email',
+				fname = '$fname',
+                lname = '$lname',
+                address = '$address',
+                zipcode = '$zipcode',
+                city = '$city',
+                phone = '$phone'
+           WHERE uid = $uid";
         return $this->db->query($query);
     }
-	
+
 	protected function cleanMyStuff(&$in = ""){
 		$in = mysqli_real_escape_string($this->db, $in);
 	}

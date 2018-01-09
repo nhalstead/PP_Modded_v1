@@ -1,34 +1,18 @@
 <?php
 require_once('include/class.user.php');
-$user = new User();
+$user = User::getInstance();
 	if (!$user->get_session()){
 	   header("Location: login.php");
 	}
-	$uid = $_SESSION['uid'];
-	$userData = $user->get_user_by_id($uid);
 
 	// Check User Perms
 	if(!$user->has_role($uid, array("ADMIN", "MODERATOR") )){
 	  header("Location: home.php");
 	}
+	$uid = $_SESSION['uid'];
+	$userData = $user->get_user_by_id($uid);
 
 	function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
-
-	if(isset($_GET['reg'])) {
-		// Setup the Registration Page and Detection of the Current Session
-		$_SESSION['man_redirect'] = "adminPage_users.php?view";
-		header("Location: registration.php");
-		exit();
-	}
-
-	$editMode = false;
-	if(isset($_GET['edit'])) {
-		$editMode = true;
-	}
-	if(isset($_GET['edit']) && isset($_GET['uid']) ){
-		header("Location: adminPage_editUser.php?url=adminPage_users.php%3Fview&uid=".$_GET['uid']);
-		exit();
-	}
 
 ?>
 <head>

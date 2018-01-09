@@ -1,7 +1,7 @@
-<?php 
+<?php
 session_start();
 require_once('include/class.user.php');
-$user = new User();
+$user = User::getInstance();
 
 if ($user->get_session() && !isset($_GET['q'])){
 	echo "User is Logged in.";
@@ -10,15 +10,16 @@ if ($user->get_session() && !isset($_GET['q'])){
 }
 if (isset($_GET['q'])){
 	$user->user_logout();
-	header( "Refresh:5; url=login.php", true, 303);
-	echo "Bye!!";
+	header( "Refresh:2; url=login.php", true, 303);
+	echo "Ok, You are OUT! Bye, See you next time!";
 	exit();
 }
 
 
 function i(&$i, $n = "Data") { if(isset($i) && $i !== "") { return $i; } else { die("Missing ".$n."!"); } }
-if (isset($_POST['submit'])) { 
-		$P = $_POST;		
+
+if (isset($_POST['submit'])) {
+		$P = $_POST;
 	    $login = $user->check_login( i($P['emailusername']), i($P['password']) );
 	    if($login == true) {
 			if($user->has_role($_SESSION['uid'], "ADMIN")){
@@ -30,7 +31,7 @@ if (isset($_POST['submit'])) {
 	        // Login Failed
 	        echo 'Wrong username or password';
 	    }
-	}	
+	}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -42,12 +43,12 @@ if (isset($_POST['submit'])) {
   </head>
 
   <body>
-    <div id="container" class="container">
+    <div class="container">
       <h1>Login Here</h1>
       <center>Admin: Name: spar - Code spar</center>
       <center>Member: Name: hej - Code 1234</center>
       <center>Member2: Name: test - Code 1234</center>
-      <form action="" method="post" name="login">
+      <form action="" method="POST" name="login">
         <table class="table " width="400">
           <tr>
             <th>UserName or Email:</th>
@@ -71,7 +72,7 @@ if (isset($_POST['submit'])) {
               </form>
               <a class="hoejre" href="forgotpassword.php">forgot password?</a>
               </div>
-            </td> 
+            </td>
           </tr>
           <tr>
             <td>&nbsp;</td>

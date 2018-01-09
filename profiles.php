@@ -1,20 +1,14 @@
-<?php 
+<?php
 require_once('include/class.user.php');
-$user = new User();
+$user = User::getInstance();
 	if (!$user->get_session()){
 	   header("Location: login.php");
 	}
-	else if (isset($_GET['q'])){
-		$user->user_logout();
-		header("Location: login.php");
-	}
 	$uid = $_SESSION['uid'];
-	
-	if(isset($_POST['Submit'])) {		
-		require_once('include/Member.php');
-		$user = new User;
-		$member = new Member($mysqli, $user);
-		$member->upsert(c($_POST["fname"]), c($_POST["lname"]), c($_POST["email"]), c($_POST["address"]), c($_POST["zipcode"]), c($_POST["city"]), c($_POST["phone"]), $_SESSION['uid']);
+
+	if(isset($_POST['Submit'])) {
+		// $uid, $fname, $lname, $email, $address, $zipcode, $city, $phone
+		User::updateProfile($uid, c($_POST["fname"]), c($_POST["lname"]), c($_POST["email"]), c($_POST["address"]), c($_POST["zipcode"]), c($_POST["city"]), c($_POST["phone"]));
 		$_SESSION['UPDATE'] = true;
 		if(mysqli_errno($mysqli)){
 			echo mysqli_error($mysqli);
@@ -25,11 +19,11 @@ $user = new User();
 	else {
 		unset($_SESSION['UPDATE']);
 	}
-	
+
 	function doTell(&$in, $default = ""){
 		return isset($in)?$in:$default;
 	}
-	
+
 $userData = $user->get_user_by_id($uid);
 ?>
 <head>
@@ -46,18 +40,18 @@ $userData = $user->get_user_by_id($uid);
 <body>
 	<span style="padding-left: 25%;">
 		<a href="home.php">Back</a>
-	</span> 
+	</span>
 	<div class="container">
 		<div class="row">
 			<div class="col-md-10">
 				<form class="form-horizontal" method="post" action="" onsubmit="return valider(this)">
 					<input type="hidden" name="uid" value="<?php echo $userData['uid']; ?>">
-					<fieldset> 
+					<fieldset>
 						<center>
 							<legend>User Profile (All Feilds Required)<?php echo doTell($_SESSION['UPDATE'])?" (Updated)":""; ?></legend>
 						</center>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="fname">Full name</label>  
+							<label class="col-md-4 control-label" for="fname">Full name</label>
 							<div class="col-md-4">
 								<div class="input-group">
 								   <div class="input-group-addon">
@@ -68,7 +62,7 @@ $userData = $user->get_user_by_id($uid);
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="lname">Last name</label>  
+							<label class="col-md-4 control-label" for="lname">Last name</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
@@ -78,31 +72,31 @@ $userData = $user->get_user_by_id($uid);
 								</div>
 							</div>
 						</div>
-							
+
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="email">Email Address</label>  
+							<label class="col-md-4 control-label" for="email">Email Address</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
-										<i class="fa fa-envelope"></i>        
+										<i class="fa fa-envelope"></i>
 									</div>
-									<input id="email" name="email" type="text" placeholder="" value="<?php echo doTell($userData['uemail']); ?>" class="form-control input-md">  
+									<input id="email" name="email" type="text" placeholder="" value="<?php echo doTell($userData['uemail']); ?>" class="form-control input-md">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="address">Address</label>  
+							<label class="col-md-4 control-label" for="address">Address</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
-										<i class="fa fa-address-card" aria-hidden="true"></i> 
+										<i class="fa fa-address-card" aria-hidden="true"></i>
 									</div>
 								   <input id="address" name="address" type="text" placeholder="" value="<?php echo doTell($userData['address']); ?>" class="form-control input-md">
-								</div>   
+								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="zipcode">Zipcode</label>  
+							<label class="col-md-4 control-label" for="zipcode">Zipcode</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
@@ -113,29 +107,29 @@ $userData = $user->get_user_by_id($uid);
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="city">City</label>  
+							<label class="col-md-4 control-label" for="city">City</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
-										<i class="fa fa-building"></i>       
+										<i class="fa fa-building"></i>
 									</div>
-									<input id="city" name="city" type="text" placeholder="" value="<?php echo doTell($userData['city']); ?>" class="form-control input-md">   
+									<input id="city" name="city" type="text" placeholder="" value="<?php echo doTell($userData['city']); ?>" class="form-control input-md">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" for="phone">Phone Number</label>  
+							<label class="col-md-4 control-label" for="phone">Phone Number</label>
 							<div class="col-md-4">
 								<div class="input-group">
 									<div class="input-group-addon">
-										<i class="fa fa-phone"></i>       
+										<i class="fa fa-phone"></i>
 									</div>
-									<input id="phone" name="phone" type="text" placeholder="" maxlength="12" value="<?php echo doTell($userData['phone']); ?>" class="form-control input-md">   
+									<input id="phone" name="phone" type="text" placeholder="" maxlength="12" value="<?php echo doTell($userData['phone']); ?>" class="form-control input-md">
 								</div>
 							</div>
 						</div>
 						<div class="form-group">
-							<label class="col-md-4 control-label" ></label>  
+							<label class="col-md-4 control-label" ></label>
 							<div class="col-md-4">
 								<input class="btn btn-success" type="submit" value="Submit" name="Submit">
 							</div>
@@ -153,22 +147,22 @@ $userData = $user->get_user_by_id($uid);
 					f.fname.focus();
 					return false;
 				}
-				
+
 				if(f.lname.value ==""){
 					alert("Enter Last Name");
 					f.lname.focus();
 					return false;
 				}
-				
+
 				var atpos = f.email.value.indexOf("@");
 				var dotpos = f.email.value.lastIndexOf(".");
-				
+
 				if (atpos<1 || dotpos<atpos+2 || dotpos+2>=f.email.value.length){
 					alert("Please enter a valid email fx dragonball@love.dk");
 					f.email.focus();
 					return false;
 				}
-				
+
 				if(f.address.value ==""){
 					alert("Enter Full Address fx Capitalcity 201 3c");
 					f.address.focus();
@@ -180,7 +174,7 @@ $userData = $user->get_user_by_id($uid);
 					f.zipcode.focus();
 					return false;
 				}
-				
+
 				if(isNaN(f.zipcode.value)){
 					alert("Zipcode can only have numbers");
 					f.zipcode.focus();
@@ -192,13 +186,13 @@ $userData = $user->get_user_by_id($uid);
 					f.zipcode.focus();
 					return false;
 				}
-				
+
 				if(f.city.value ==""){
 					alert("Please Enter A city");
 					f.city.focus();
 					return false;
 				}
-				
+
 				if(f.phone.value ==""){
 					alert("Please Enter A Valid Number");
 					f.phone.focus();
@@ -217,7 +211,7 @@ $userData = $user->get_user_by_id($uid);
 					f.phone.focus();
 					return false;
 				}
-				
+
 				return true;
 			}
 			</script>

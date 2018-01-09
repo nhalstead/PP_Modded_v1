@@ -1,6 +1,6 @@
 <?php
 require_once("include/class.user.php");
-$user = new User();
+$user = User::getInstance();
 if (!$user->get_session()){
 	header("Location: login.php");
 }
@@ -17,19 +17,19 @@ switch($user->fetch_role($uid)){
 		echo "<a href='login.php'>Click me!</a>";
 		exit();
 	break;
-	
-	case "GUEST": 
+
+	case "GUEST":
 		echo "Welcome Guest User!";
 	break;
-	
+
 	case "MEMBER":
 		echo "Hello Memeber!";
 	break;
-	
+
 	case "ADMIN":
 		echo "Hello Admin!";
 	break;
-	
+
 	case "":
 		http_response_code(500);
 		echo "Please contact support, You Account has on perms.";

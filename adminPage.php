@@ -1,30 +1,30 @@
-<?php 
+<?php
 session_start();
 require_once('include/class.user.php');
-$user = new User();
+$user = User::getInstance();
 $uid = $_SESSION['uid'];
 
 if (!$user->get_session()){
     header("Location: home.php");
 	exit(); # Stop Loading
 }
+//$userData = $user->get_user_by_id($uid);
+$userData = User::getUser();
 
-if (isset($_GET['q'])){
-    $user->user_logout();
-    header("Location: login.php");
-	exit(); # Stop Loading
+// Check User Perms
+if(!$user->has_role($uid, array("ADMIN", "MODERATOR") )){
+  header("Location: home.php");
 }
-$userData = $user->get_user_by_id($uid);
 
 $role_level = 0;
 $role = $user->fetch_role($uid);
 switch(strtoupper($role)){
 	case "MODERATOR":
-		$role_level = 1;
+		// Authorized
 	break;
-	
+
 	case "ADMIN":
-		$role_level = 2;
+		// Authorized
 	break;
 
 	default:
@@ -40,12 +40,13 @@ switch(strtoupper($role)){
 	<link rel="stylesheet" type="text/css" href="assets/css/custom.css">
 </head>
 <body>
+  <link rel="stylesheet" href="assets/css/custom_admin.css"/>
 	<nav class="navbar navbar-default navbar-fixed-top">
 	  <div class="container">
 			<a class="navbar-left" href="home.php">Home</a>
 			<?php
 				// Offer the Admin Page if Admin
-				if($user->has_role($uid, "MODERATOR") || $user->has_role($uid, "Admin")){
+				if($user->has_role($uid, array("ADMIN", "MODERATOR") )){
 					echo '<a class="navbar-left" href="adminPage.php">Mgr Page</a>';
 				}
 			?>
@@ -57,7 +58,7 @@ switch(strtoupper($role)){
 		<div class="col-md-4">
 			<img src="assets/images/vegeta.jpg" alt="welcome"/><br>
 			<br><b>
-				<?php  
+				<?php
 					if($user->has_role($uid, "ADMIN")){
 						echo "Welcome Admin!";
 					}
@@ -69,9 +70,9 @@ switch(strtoupper($role)){
 					}
 				?>
 			</b>
-			
-			<br>Full name: <?php echo ucwords($userData['fname']); ?>
-			<br>Last name: <?php echo ucwords($userData['lname']); ?>
+
+			<br>First Name: <?php echo ucwords($userData['fname']); ?>
+			<br>Last Name: <?php echo ucwords($userData['lname']); ?>
 			<br>Email: <?php echo $userData['uemail']; ?>
 		</div>
 		<div class="col-md-4">

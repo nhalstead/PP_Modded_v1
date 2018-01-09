@@ -1,16 +1,17 @@
-<?php 
+<?php
 session_start();
 require_once('include/class.user.php');
 $user = new User();
     if (!$user->get_session()){
        header("Location: login.php");
     }
-    else if (isset($_GET['q'])){
-        $user->user_logout();
-        header("Location: login.php");
-    }
 $uid = $_SESSION['uid'];
 $userData = $user->get_user_by_id($uid);
+
+if(isset($_POST['old_password'])){
+  echo "<center>Updated Password</center>";
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -19,12 +20,18 @@ $userData = $user->get_user_by_id($uid);
 	<title>Home</title>
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous">
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-	<link rel="stylesheet" href="assets/css/custom.css"/> 
+	<link rel="stylesheet" href="assets/css/custom.css"/>
 </head>
 <body>
-	<nav class="navbar navbar-default navbar-fixed-top">
+  <nav class="navbar navbar-default navbar-fixed-top">
 	  <div class="container">
 			<a class="navbar-left" href="home.php">Home</a>
+			<?php
+				// Offer the Admin Page if Admin
+				if($user->has_role($uid, array("ADMIN", "MODERATOR") )){
+					echo '<a class="navbar-left" href="adminPage.php">Mgr Page</a>';
+				}
+			?>
 			<a class="navbar-right" href="home.php?q=logout">LOGOUT</a>
 	  </div>
 	</nav>
@@ -33,38 +40,38 @@ $userData = $user->get_user_by_id($uid);
 		<div class="col-md-4">
 			<img src="assets/images/vegeta.jpg" alt="welcome"/><br>
 			<br><b><?php echo $user->has_role($uid, "ADMIN")?"Welcome Admin":"Welcome User" ?></b>
-			<br>Full name: <?php echo ucwords($userData['fname']); ?>
-			<br>Last name: <?php echo ucwords($userData['lname']); ?>
+			<br>First Name: <?php echo ucwords($userData['fname']); ?>
+			<br>Last Name: <?php echo ucwords($userData['lname']); ?>
 			<br>Email: <?php echo $userData['uemail']; ?>
 		</div>
 		<div class="col-md-4">
 			<center>
+        <br>
 				<h1>
-					<br>
-					<br>Hello <?php echo ucwords($userData['fname']); ?>
+					Hello <?php echo ucwords($userData['fname']); ?>
 				</h1>
-				<div class="form-group">
-					<label class="col-md-8 control-label" for="upass">Old Password</label>  
-					<div class="col-md-8">
-						<div class="input-group">
-							<div class="input-group-addon">
-								<i class="fa fa-user"></i>
-							</div>
-							<input id="upass" name="upass" type="text" placeholder="" value="" class="form-control input-md">
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<label class="col-md-8 control-label" for="npass">New Password</label>  
-					<div class="col-md-8">
-						<div class="input-group">
-							<div class="input-group-addon">
-								<i class="fa fa-user"></i>
-							</div>
-							<input id="npass" name="npass" type="text" placeholder="" value="" class="form-control input-md">
-						</div>
-					</div>
-				</div>
+        <br>
+        <form action="" method="POST">
+          <div class="form-group row">
+            <!--<label for="inputPasswordOld" >Old Password</label>-->
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1"> <i class="fa fa-lock"></i></span>
+              <input type="password" name="old_password" id="inputPasswordOld"  class="form-control" placeholder="Old Password" aria-describedby="passwordHelpInline">
+            </div>
+          </div>
+          <div class="form-group row">
+          <!--<label for="inputPasswordNew">New Password</label>-->
+            <div class="input-group">
+              <span class="input-group-addon" id="basic-addon1"> <i class="fa fa-lock"></i></span>
+              <input type="password" name="new_password" id="inputPasswordNew"  class="form-control" placeholder="New Password" aria-describedby="passwordHelpInline">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="input-group">
+              <button type="submit" class="btn btn-primary">Set Password</button>
+            </div>
+          </div>
+        </form>
 			</center>
 		</div>
 	</div>
