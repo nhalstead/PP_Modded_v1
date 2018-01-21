@@ -139,6 +139,21 @@ $userData = $user->get_user_by_id($uid);
 			</div>
 			<div class="col-md-2 hidden-xs">
 				<img src="http://websamplenow.com/30/userprofile/images/avatar.jpg" class="img-responsive img-thumbnail ">
+				<div>
+					<h3>User Perms</h3>
+					<hr></hr>
+					<?php
+						$user_roles = $user->fetch_roles_order($uid);
+						$user_roles = array_map(function($item) {
+						    return $item["role_name"];
+						}, $user_roles);
+
+						foreach($user_roles as $index => $name){
+							if(0 != $index) { echo "<br>"; }
+							echo "&mdash; ".$name;
+						}
+					?>
+				</div>
 			</div>
 			<script>
 				function valider(f){

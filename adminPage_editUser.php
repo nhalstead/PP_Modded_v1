@@ -30,17 +30,14 @@ if (isset($_POST['submit'])){
 	$uname = strip_tags(filter_input(INPUT_POST, 'uname', FILTER_SANITIZE_STRING));
 	$uemail = strip_tags(filter_input(INPUT_POST, 'uemail', FILTER_SANITIZE_EMAIL));
 	$upass = strip_tags(filter_input(INPUT_POST, 'upass', FILTER_SANITIZE_STRING));
-	$register = $user->update_user($uid, $fname, $lname, $username, $email, $address, $zipcode, $city, $phone);
+	$update = $user->update_user($uid, $fname, $lname, $uname, $uemail);
 
-	if ($register) {
-		// Registration Success
-		echo "<div class='textcenter'>Upadate Successful!</div>";
-		if(isset($_GET['url'])){
-			header('Location: '.urldecode($_GET['url']));
-		}
-	} else {
-		// Registration Failed
-		echo "<div class='textcenter'>Update failed!</div>";
+	$newRoles = isset($_POST['newRoles'])?$_POST['newRoles']:array();
+	$user->update_roles($uid, $newRoles);
+
+	echo "<div class='textcenter'>Upadate Successful!</div>";
+	if(isset($_GET['url'])){
+		header('Location: '.urldecode($_GET['url']));
 	}
 }
 
@@ -52,6 +49,10 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" rel="stylesheet" integrity="sha256-NuCn4IvuZXdBaFKJOAcsU2Q3ZpwbdFisd5dux4jkQ5w=" crossorigin="anonymous">
     <link rel="stylesheet" href="assets/css/bootstrap.css"/>
 		<link rel="stylesheet" href="assets/css/custom.css"/>
+		<link rel="stylesheet" href="assets/css/multiselect.css"/>
+		<link rel="stylesheet" href="assets/css/jasmine.css"/>
+		<script src="assets/js/jquery.js"></script>
+		<script src="assets/js/multiselect.min.js"></script>
 </head>
 <body>
 	<link rel="stylesheet" href="assets/css/custom_admin.css"/>
@@ -67,6 +68,11 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 			<a class="navbar-right" href="home.php?q=logout">LOGOUT</a>
 	  </div>
 	</nav>
+
+	<link rel="stylesheet" href="assets/css/sidebar.css"/>
+	<ul id="social_side_links">
+		<li><a style="background-color: #e81010" href="adminPage_users.php?delete=<?php echo $_GET['uid']; ?>" title="Delete User"><img src="assets/images/user-delete.svg" /></a></li>
+	</ul>
 
 	<div class="container">
 		<h1>Update User Account</h1>
@@ -99,13 +105,52 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 				<tr>
 					<th>Password:</th>
 					<td>
-						<input type="password" name="upass" value="************" required>
+						<input type="password" name="upass" value>
 					</td>
 				</tr>
+
 				<tr>
-					<td>&nbsp;</td>
+					<th>Roles:</th>
 					<td>
-						<input class="btn" type="submit" name="submit" value="Update" onclick="return(submitreg());">
+						<div class="row">
+							<div class="col-xs-5">
+								<select id="multiselect" class="roleList form-control" size="8" multiple="multiple">
+									<?php
+										$nonJoin = $user->fetch_all_roles();
+										print_r($nonJoin);
+										foreach($nonJoin as $id => $role){
+											echo '<option value="'.$role['role_id'].'">'.$role['role_name'].'</option>';
+										}
+									?>
+
+								</select>
+							</div>
+							<div class="col-xs-2">
+								<button type="button" id="multiselect_rightAll" class="btn btn-block"><i class="fa fa-forward" aria-hidden="true"></i></button>
+								<button type="button" id="multiselect_rightSelected" class="btn btn-block"><i class="fa fa-chevron-right" aria-hidden="true"></i></button>
+								<button type="button" id="multiselect_leftSelected" class="btn btn-block"><i class="fa fa-chevron-left" aria-hidden="true"></i></button>
+								<button type="button" id="multiselect_leftAll" class="btn btn-block"><i class="fa fa-backward" aria-hidden="true"></i></button>
+							</div>
+
+							<div class="col-xs-5">
+								<select name="newRoles[]" id="multiselect_to" class="roleList form-control" size="8" multiple="multiple">
+									<?php
+										$joined = $user->fetch_roles_order($_GET['uid']);
+										foreach($joined as $id => $role){
+											echo '<option value="'.$role['role_id'].'">'.$role['role_name'].'</option>';
+										}
+									?>
+								</select>
+							</div>
+						</div>
+
+						<script type="text/javascript">
+							jQuery(document).ready(function($) {
+									$('#multiselect').multiselect({
+										keepRenderingSort: true
+									});
+							});
+						</script>
 					</td>
 				</tr>
 				<tr>
@@ -116,10 +161,16 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 						<script>/* Enable navigation prompt*/ window.onbeforeunload = function() { return false; };</script>
 					</td>
 				</tr>
+
+				<tr>
+					<td>&nbsp;</td>
+					<td>
+						<input class="btn" type="submit" onclick="window.onbeforeunload = null;" name="submit" value="Update" onclick="return(submitreg());">
+					</td>
+				</tr>
 			</table>
 		</form>
 	</div>
-    <script src="assets/js/jquery.js"></script>
-    <script src="assets/js/bootstrap.min.js"></script>
+  <script src="assets/js/bootstrap.min.js"></script>
 </body>
 </html>

@@ -4,13 +4,13 @@ $user = User::getInstance();
 	if (!$user->get_session()){
 	   header("Location: login.php");
 	}
+	$uid = $_SESSION['uid'];
+	$userData = $user->get_user_by_id($uid);
 
 	// Check User Perms
 	if(!$user->has_role($uid, array("ADMIN", "MODERATOR") )){
 	  header("Location: home.php");
 	}
-	$uid = $_SESSION['uid'];
-	$userData = $user->get_user_by_id($uid);
 
 	function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 
@@ -36,9 +36,6 @@ $user = User::getInstance();
 	</nav>
 	<link rel="stylesheet" href="assets/css/sidebar.css"/>
 	<ul id="social_side_links">
-		<?php if(!isset($_GET['edit'])){
-				echo '<li><a style="background-color: #54d063;" href="?edit"><!-- add target="_blank" to open in new tab. --><img src="assets/images/pencil.svg" /></a></li>';
-		} ?>
 		<li><a style="background-color: #54aed0" href="?reg"><img src="assets/images/create-group-button.svg" /></a></li>
 	</ul>
 	<div class="container">

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 09, 2017 at 07:26 PM
+-- Generation Time: Jan 21, 2018 at 03:47 AM
 -- Server version: 5.6.13
 -- PHP Version: 5.4.17
 
@@ -73,6 +73,7 @@ INSERT INTO `permissions` (`permissions_id`, `permissions_name`, `permissions_cn
 
 CREATE TABLE IF NOT EXISTS `roles` (
   `role_id` int(11) NOT NULL AUTO_INCREMENT,
+  `order` int(2) NOT NULL DEFAULT '1',
   `role_name` varchar(50) NOT NULL,
   PRIMARY KEY (`role_id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
@@ -81,11 +82,11 @@ CREATE TABLE IF NOT EXISTS `roles` (
 -- Dumping data for table `roles`
 --
 
-INSERT INTO `roles` (`role_id`, `role_name`) VALUES
-(1, 'ADMIN'),
-(2, 'MODERATOR'),
-(3, 'MEMBER'),
-(4, 'GUEST');
+INSERT INTO `roles` (`role_id`, `order`, `role_name`) VALUES
+(1, 9, 'ADMIN'),
+(2, 8, 'MODERATOR'),
+(3, 1, 'MEMBER'),
+(4, 0, 'GUEST');
 
 -- --------------------------------------------------------
 
@@ -95,63 +96,17 @@ INSERT INTO `roles` (`role_id`, `role_name`) VALUES
 
 CREATE TABLE IF NOT EXISTS `roles_and_permissions` (
   `insertId` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'This is for the Specific Role',
-  `weight` int(1) unsigned NOT NULL COMMENT 'Weight of the Permission. The Higher the More Weight it has.',
   `uid` int(11) NOT NULL COMMENT 'Linking to the User''s account',
   `permission_id` int(11) NOT NULL COMMENT 'Linking to the Role and it''s permissions',
   PRIMARY KEY (`insertId`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=47 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
 -- Dumping data for table `roles_and_permissions`
 --
 
-INSERT INTO `roles_and_permissions` (`insertId`, `weight`, `uid`, `permission_id`) VALUES
-(1, 0, 1, 1),
-(2, 10, 34, 1),
-(3, 0, 1, 3),
-(4, 0, 1, 14),
-(5, 0, 1, 13),
-(6, 0, 1, 12),
-(7, 0, 1, 11),
-(8, 0, 1, 10),
-(9, 0, 1, 9),
-(10, 0, 1, 8),
-(11, 0, 1, 7),
-(12, 0, 1, 6),
-(13, 0, 1, 5),
-(14, 0, 1, 4),
-(15, 0, 1, 20),
-(16, 0, 1, 21),
-(17, 0, 1, 22),
-(18, 0, 2, 2),
-(19, 2, 2, 3),
-(20, 0, 2, 4),
-(21, 0, 2, 5),
-(22, 0, 2, 7),
-(23, 0, 2, 9),
-(24, 0, 2, 10),
-(25, 0, 2, 11),
-(26, 9, 34, 2),
-(27, 0, 2, 21),
-(28, 0, 2, 22),
-(29, 0, 3, 16),
-(30, 0, 3, 17),
-(31, 0, 3, 20),
-(32, 0, 3, 21),
-(33, 0, 3, 22),
-(34, 0, 4, 15),
-(35, 0, 4, 19),
-(36, 0, 1, 24),
-(37, 0, 4, 23),
-(38, 0, 3, 23),
-(39, 0, 2, 24),
-(40, 0, 3, 24),
-(41, 0, 2, 12),
-(42, 0, 2, 8),
-(43, 0, 3, 18),
-(44, 0, 3, 19),
-(45, 0, 4, 24),
-(46, 0, 99, 4);
+INSERT INTO `roles_and_permissions` (`insertId`, `uid`, `permission_id`) VALUES
+(1, 34, 1);
 
 -- --------------------------------------------------------
 
@@ -162,7 +117,7 @@ INSERT INTO `roles_and_permissions` (`insertId`, `weight`, `uid`, `permission_id
 CREATE TABLE IF NOT EXISTS `users` (
   `uid` int(11) unsigned NOT NULL AUTO_INCREMENT,
   `uname` varchar(30) DEFAULT NULL,
-  `upass` varchar(50) DEFAULT NULL,
+  `upass` varchar(200) DEFAULT NULL,
   `uemail` varchar(70) DEFAULT NULL,
   `fname` varchar(100) DEFAULT NULL,
   `lname` varchar(60) NOT NULL,
@@ -178,10 +133,10 @@ CREATE TABLE IF NOT EXISTS `users` (
 --
 
 INSERT INTO `users` (`uid`, `uname`, `upass`, `uemail`, `fname`, `lname`, `address`, `zipcode`, `city`, `phone`) VALUES
-(34, 'spar', 'f412a2010eb6625c85ebe505e051e18008501c5e', 'mailme@gmail.com', 'spar', 'spar', '123 FakeIt Road', '000000', 'WWW', '8885554455'),
+(34, 'spar', 'f412a2010eb6625c85ebe505e051e18008501c5e', 'master@thehouse.co.uk', 'Spar', 'Admin', '123 FakeIt Road Ave', '000000', 'WWW', '8885554455'),
 (35, 'hej', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'hej@live.dk', 'hej', 'hej', '', '123456', '', '0'),
 (36, 'test', '7110eda4d09e062aa5e4a390b0a572ac0d2c0220', 'test@live.dk', 'test', 'test', '', '123456', '', '0'),
-(37, 'noob', '34bcdf98deb05825ee8f40bad4b5912df89b0b95', 'noob@two.o', 'Noob', 'Noob', '', '123456', '', '0');
+(37, 'noob', 'da39a3ee5e6b4b0d3255bfef95601890afd80709', 'noob@two.o', 'Noob', 'Noob', '', '123456', '', '0');
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
