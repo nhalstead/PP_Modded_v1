@@ -55,7 +55,6 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
     <link rel="stylesheet" href="assets/css/bootstrap.css"/>
 		<link rel="stylesheet" href="assets/css/custom.css"/>
 		<link rel="stylesheet" href="assets/css/multiselect.css"/>
-		<link rel="stylesheet" href="assets/css/jasmine.css"/>
 		<script src="assets/js/jquery.js"></script>
 		<script src="assets/js/multiselect.min.js"></script>
 </head>
@@ -74,13 +73,48 @@ function doTell(&$in, $default = ""){ return isset($in)?$in:$default; }
 	  </div>
 	</nav>
 
+	<!-- SweetAlert -->
+  <script src="assets/js/sweetalert.min.js"></script>
+  <link rel="stylesheet" href="assets/css/sweetalert.min.css">
+	<script>
+		// @link https://www.ludu.co/lesson/how-to-use-sweetalert
+		function deleteUser() {
+			var userId = <?php echo $_GET['uid']; ?>;
+			var linkURL = "adminPage_users.php?delete=";
+	    swal({
+	      title: "Delete the User?",
+	      text: "If you want to delete User " + userId + " then click Ok!",
+	      type: "warning",
+	      showCancelButton: true
+	    }, function() {
+	      // Redirect the user
+				window.onbeforeunload = null;
+	      window.location.href = linkURL + userId;
+	    });
+	  }
+	</script>
 	<link rel="stylesheet" href="assets/css/sidebar.css"/>
 	<ul id="social_side_links">
-		<li><a style="background-color: #e81010" href="adminPage_users.php?delete=<?php echo $_GET['uid']; ?>" title="Delete User"><img src="assets/images/user-delete.svg" /></a></li>
+		<li><a style="background-color: #e81010" onclick="deleteUser()" title="Delete User"><img src="assets/images/user-delete.svg" /></a></li>
 	</ul>
 
 	<div class="container">
 		<h1>Update User Account</h1>
+		<?php
+			// Check if you are shooting your self in the foot.
+			if($uid == $_GET['uid']){
+				echo '
+					<div class="alert alert-danger">
+					  <strong>Danger!</strong> You are Editing your own Profile! If you remove and permissions on your account you may lose access to this page.
+					</div>
+					<script>
+						function deleteUser(){
+							swal("Not Allowed!", "Sorry, You can\'t shoot your self in the foot.", "error");
+						}
+					</script>
+				';
+			}
+		?>
 		<form action="" method="POST" name="reg">
 			<table class="table">
 				<tr>

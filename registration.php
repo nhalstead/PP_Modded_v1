@@ -59,7 +59,7 @@ if (isset($_POST['submit'])){
       <form action="" method="POST" name="reg">
         <table class="table">
           <tr>
-            <th>Full Name:</th>
+            <th>First Name:</th>
             <td>
               <input type="text" name="fname" required>
             </td>
@@ -91,7 +91,7 @@ if (isset($_POST['submit'])){
           <tr>
             <td>&nbsp;</td>
             <td>
-              <input class="btn" type="submit" name="submit" value="Register" onclick="return(submitreg());">
+              <input class="btn" type="submit" onclick="window.onbeforeunload = null;" name="submit" value="Register" onclick="return(submitreg());">
             </td>
           </tr>
 					<?php
