@@ -32,6 +32,11 @@ if (isset($_POST['submit'])){
 	$upass = strip_tags(filter_input(INPUT_POST, 'upass', FILTER_SANITIZE_STRING));
 	$update = $user->update_user($uid, $fname, $lname, $uname, $uemail);
 
+	// Do the Password Update, if not empty.
+	if(!empty($upass)){
+		$user->update_password($uid, $upass);
+	}
+
 	$newRoles = isset($_POST['newRoles'])?$_POST['newRoles']:array();
 	$user->update_roles($uid, $newRoles);
 

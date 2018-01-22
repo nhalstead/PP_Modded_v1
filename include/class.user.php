@@ -191,7 +191,7 @@ class User {
 
 		// If the Username & the Email are not used already then register the account.
 		if($count_row !== 0){
-			$query = "UPDATE  `users` SET  `upass` = '$password' WHERE  `uid` ='$uid'";
+			$query = "UPDATE  `users` SET  `upass` = '".$password."' WHERE  `uid` ='$uid'";
 			$result = $this->db->query($query) or die($this->db->error);
 			return true;
 		} else {
